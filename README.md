@@ -36,15 +36,18 @@ the selection will still contain 30 songs.
 Build requires CMake.
 Most important dependency is a C++11 capable compiler and a Qt5 development environment.
 
+```
 mkdir mediawarp.obj
 cd mediawarp.obj
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../mediawarp
 make
 make install
+```
 
 Run with
-
+```
 mediawarp
+```
 
 ## License
 Apache License 2.0
