@@ -1,0 +1,3 @@
+// the configured options and settings for mediawarp
+#define mediawarp_VERSION_MAJOR @mediawarp_VERSION_MAJOR@
+#define mediawarp_VERSION_MINOR @mediawarp_VERSION_MINOR@

@@ -1,0 +1,37 @@
+mediawarp
+---------
+
+Music and Video Streams - warping them to your movile devices easily.
+
+Site: http://mediawarp.org/
+
+
+
+### playback ################################
+  select playcount pc, count(playcount) from songs  group by pc;
+  lastplayed
+  beginning   # <<< marking the current play positon ?
+
+### Time ################################
+# Retrieved (old/new) 
+  for old songs use: min(mtime,ctime)
+  for new songs use: max(mtime,ctime)
+
+### Song types  ################################
+# long or short songs
+  length (or as fallback: filesize)
+  genre
+  
+
+### Liking ################################
+  rating
+  playcount
+  skipcount
+  score
+ 
+
+### Filters ################################
+  path
+  genre
+  Hoerspiel-Filter (Kombi-Filter: Multi-Genre + Path)
+  
