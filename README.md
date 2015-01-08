@@ -20,7 +20,15 @@ is to let it interact with as many Collections a possible, like:
  - Synology Media Station (definitely planned)
  - iTunes media server (may need volunteer)
 
-You can define rules like
+You can use two types of selectors:
+ - Sorting (basically done)
+ - Filters (tbd)
+ - Max Limit (done)
+
+## Sorting
+ Described at section "Running"
+ 
+## Filters (tbd)
 - "Last 3 albums"
 - "100 random songs"
 - "50 songs not yet heard"
@@ -47,7 +55,22 @@ make install
 Run with
 ```
 mediawarp
+
+# In general:
+mediawarp <count> <sort-rules>
+
+# Example: 50 songs sorted by LIKING ASC, if a tie use RANDOM
+mediawarp 50 +LIKING,RANDOM
+
+# Example: 100 completely random songs
+mediawarp 100 RANDOM
 ```
+
+Supported sort rules fore all media collections are:
+- NAME     - Complete name of the file, including path elements if the media collection support it
+- LIKING   - Liking, as given by the media collection (may be based on a rating, listen count, or anything else)
+- RANDOM   - Completely random order
+- INDEX    - Always a fixed order, as given by the media collection
 
 ## License
 Apache License 2.0
