@@ -27,9 +27,9 @@ You can define rules like
 - "My 30 favorite tunes"
 
 You can combine as many rules as possibe. Also, all rules allow randomness, so
-for example the "30 favorite tunes" can vary if you want. For example, if you define
-randomness to be 75%, 3 out of 4 of youtr most favorite songs will be skipped, but
-the list will still contain 30 songs.
+for example the "30 favorite tunes" can vary if you want. For example, you could define
+randomness to be 75%. In that case, 3 out of 4 of your most favorite songs will be skipped, but
+the selection will still contain 30 songs.
 
 
 ## Building
