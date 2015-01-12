@@ -67,7 +67,7 @@ QSqlQuery* SQLiteConnection::runQuery(const QString& sql)
 
 	QSqlQuery* query = new QSqlQuery(sql, db);
 	bool ok = query->exec();
-	qDebug() << "SQL status=" << ok << ",  sql=" << sql;
+//	qDebug() << "SQL status=" << ok << ",  sql=" << sql;
 	return query;
 }
 

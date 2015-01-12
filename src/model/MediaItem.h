@@ -37,7 +37,8 @@ public:
 	int getSkipcount() const;
 	void setSkipcount(int skipcount);
 
-
+	const QString getAlbum() const;
+	const QString getTitle() const;
 
 //	int operator<(const MediaItem& other);
 

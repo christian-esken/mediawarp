@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <time.h>
 #include <vector>       // std::vector
@@ -6,9 +7,12 @@
 #include <QList>
 
 #include "mediawarpConfig.h"
-#include "storage/SQLiteConnection.h"
+#include "filter/UnhearedFilter.h"
 #include "model/MediaItem.h"
+#include "selection/ElementSelectorAlbums.h"
+#include "selection/ElementSelectorSongs.h"
 #include "selection/MediaItemSortFunctions.h"
+#include "storage/SQLiteConnection.h"
 #include "util/stdnamespaces.h"
 
 using std::cout;
@@ -42,7 +46,14 @@ int main(int argc, char *argv[])
 		order = argv[2];
 	}
 
-	cout << "Opened Clementine database: db=" << clementineDB << endl;
+
+	std::vector<shared_ptr<FilterInterface> > filters;
+
+	UnhearedFilter* uf = new UnhearedFilter();
+	shared_ptr<FilterInterface> filter = shared_ptr<FilterInterface>(uf);
+	filters.push_back(filter);
+
+//	cout << "Opened Clementine database: db=" << clementineDB << endl;
 
 	QString allTunesSQL;
 	allTunesSQL.reserve(300);
@@ -76,7 +87,7 @@ int main(int argc, char *argv[])
 		ventries.push_back(mi1);
 	}
 
-	std::cout << "------------------------------" << std::endl;
+//	std::cout << "------------------------------" << std::endl;
 
 //	std::cout << "--- PRINT before SORT ---------------------------" << std::endl;
 //	foreach(shared_ptr<MediaItem> mi, ventries)
@@ -85,31 +96,38 @@ int main(int argc, char *argv[])
 //	}
 
 
-	std::cout << "--- SORT ---------------------------" << std::endl;
+//	std::cout << "--- SORT ---------------------------" << std::endl;
+
+	// -BEGIN- SORT ----------------------------------------------------------------------
 
 	QString orderString(order);
 	QStringList orderList = orderString.split(',');
 	MediaItemSort* sortFunction = new MediaItemSort(orderList);
 
-
-	int i = 1;
 	std::vector<shared_ptr<MediaItem> >::iterator begin1(ventries.begin());
 	std::vector<shared_ptr<MediaItem> >::iterator end1(ventries.end());
-//	std::vector<shared_ptr<MediaItem> >::iterator end1(ventries.begin().operator +(100));
 	std::sort(begin1, end1, *sortFunction);
-//  std::sort(ventries.begin(), ventries.end(), MediaItemSortFunctions::byIndexSmaller);
 
-	std::cout << "--- SORT DONE --- " << order << std::endl;
 
-	foreach(shared_ptr<MediaItem> mi, ventries){
-	std::cout << (*mi) << std::endl;
-	if (++i > limit)
-	break;
-}
+	// -PROCESS- FILTER ----------------------------------------------------------------------
+//	std::copy_if()
+	std::vector<shared_ptr<MediaItem> > filteredSongs;
+	std::copy_if(begin1, end1, std::back_inserter(filteredSongs), *(uf));
+
+	// -END- FINAL SELECTION ----------------------------------------------------------------------
+	ElementSelectorAlbums selector(limit);
+	std::vector<shared_ptr<MediaItem> > selectedSongs = selector.select(filteredSongs);
+
+	for (auto &mi : selectedSongs)
+	{
+		std::cout << (*mi) << std::endl;
+//		if (++i > limit)
+//		break;
+	}
 	delete query;
 
 	ventries.clear();
-	std::cout << "--- QUIT --- " << order << std::endl;
+//	std::cout << "--- QUIT --- " << order << std::endl;
 
 	conn->close();
 	delete conn;

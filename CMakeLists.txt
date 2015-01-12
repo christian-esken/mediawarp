@@ -42,9 +42,14 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 add_executable(mediawarp
 src/main.cpp
-src/storage/SQLiteConnection.cpp
+src/filter/FilterInterface.cpp
+src/filter/UnhearedFilter.cpp
 src/model/MediaItem.cpp
+src/selection/ElementSelector.cpp
+src/selection/ElementSelectorAlbums.cpp
+src/selection/ElementSelectorSongs.cpp
 src/selection/MediaItemSortFunctions.cpp
+src/storage/SQLiteConnection.cpp
 )
 
 
