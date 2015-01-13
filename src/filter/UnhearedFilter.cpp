@@ -9,13 +9,10 @@
 
 UnhearedFilter::UnhearedFilter()
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 UnhearedFilter::~UnhearedFilter()
 {
-	// TODO Auto-generated destructor stub
 }
 
 bool UnhearedFilter::match(shared_ptr<MediaItem> mediaItem)

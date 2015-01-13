@@ -1,29 +1,29 @@
 /*
- * ChainedFilter.cpp
+ * ChainedAndFilter.cpp
  *
  *  Created on: 12.01.2015
  *      Author: chris
  */
 
-#include "ChainedFilter.h"
+#include "ChainedAndFilter.h"
 
-ChainedFilter::ChainedFilter()
+ChainedAndFilter::ChainedAndFilter()
 {
 }
 
-ChainedFilter::~ChainedFilter()
+ChainedAndFilter::~ChainedAndFilter()
 {
 	filters.clear();
 }
 
-void ChainedFilter::addFilter(FilterInterface* filter)
+void ChainedAndFilter::addFilter(FilterInterface* filter)
 {
 	shared_ptr<FilterInterface> ptrFilter = shared_ptr<FilterInterface>(filter);
 	filters.push_back(ptrFilter);
 
 }
 
-bool ChainedFilter::match(shared_ptr<MediaItem> mediaItem)
+bool ChainedAndFilter::match(shared_ptr<MediaItem> mediaItem)
 {
 	for (shared_ptr<FilterInterface> filter : filters)
 	{

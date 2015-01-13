@@ -1,22 +1,22 @@
 /*
- * UnhearedFilter.h
+ * ChainedAndFilter.h
  *
  *  Created on: 12.01.2015
  *      Author: chris
  */
 
-#ifndef ChainedFILTER_H_
-#define ChainedFILTER_H_
+#ifndef ChainedAndFilter_H_
+#define ChainedAndFilter_H_
 
 #include "FilterInterface.h"
 
 #include <vector>       // std::vector
 
-class ChainedFilter: public FilterInterface
+class ChainedAndFilter: public FilterInterface
 {
 public:
-	ChainedFilter();
-	virtual ~ChainedFilter();
+	ChainedAndFilter();
+	virtual ~ChainedAndFilter();
 
 	void addFilter(FilterInterface* ifc);
 

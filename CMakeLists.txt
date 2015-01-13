@@ -42,7 +42,10 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 add_executable(mediawarp
 src/main.cpp
+src/collection/ClementineCollection.cpp
+src/collection/CollectionInterface.cpp
 src/filter/FilterInterface.cpp
+src/filter/ChainedAndFilter.cpp
 src/filter/UnhearedFilter.cpp
 src/model/MediaItem.cpp
 src/selection/ElementSelector.cpp
