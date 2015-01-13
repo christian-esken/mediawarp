@@ -1,8 +1,8 @@
 # mediawarp - Warp Media to your mobile devices easily
 
 mediawarp is a tool that warps your favorite MP3's to your Media player.
-It is specially designed that it allows you to fill your player with one click.
-It can add new songs, and also rediscover music you may have forgotten. It
+It is specially designed as a 1-click fill-your-player solution.
+It can add new songs by rules or randomly, helping you to rediscover music you may have forgotten. It
 keeps track of your media players content, and can exchange the media on it.
 
 ## Status
