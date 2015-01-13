@@ -13,8 +13,6 @@ set(CMAKE_AUTOMOC ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 
 
-  message("xyz")
-
 set (mediawarp_VERSION_MAJOR 1)
 set (mediawarp_VERSION_MINOR 0)
 
