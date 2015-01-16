@@ -100,14 +100,14 @@ const QString MediaItem::getAlbum() const
 {
 	// TODO implement properly. This "field" possibly needs to go to the constructor
 	int slashIndex = filename.lastIndexOf('/');
-	return slashIndex == -1 ? QString() : filename.left(slashIndex-1);
+	return slashIndex == -1 ? QString() : filename.left(slashIndex);
 }
 
 const QString MediaItem::getTitle() const
 {
 	// TODO implement properly. This "field" possibly needs to go to the constructor
 	int slashIndex = filename.lastIndexOf('/');
-	return slashIndex == -1 ? filename : filename.mid(slashIndex);
+	return slashIndex == -1 ? filename : filename.mid(slashIndex-1);
 }
 
 void MediaItem::setFilename(const QString& filename)

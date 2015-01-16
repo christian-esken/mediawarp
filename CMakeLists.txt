@@ -42,8 +42,11 @@ add_executable(mediawarp
 src/main.cpp
 src/collection/ClementineCollection.cpp
 src/collection/CollectionInterface.cpp
+src/filter/FilterFactory.cpp
 src/filter/FilterInterface.cpp
+src/filter/BaseFilter.cpp
 src/filter/ChainedAndFilter.cpp
+src/filter/AudiobookFilter.cpp
 src/filter/UnhearedFilter.cpp
 src/model/MediaItem.cpp
 src/selection/ElementSelector.cpp
@@ -51,6 +54,8 @@ src/selection/ElementSelectorAlbums.cpp
 src/selection/ElementSelectorSongs.cpp
 src/selection/MediaItemSortFunctions.cpp
 src/storage/SQLiteConnection.cpp
+src/util/Constants.cpp
+src/util/Param.cpp
 )
 
 

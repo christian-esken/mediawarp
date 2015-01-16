@@ -9,12 +9,11 @@
 
 FilterInterface::FilterInterface()
 {
-	// TODO Auto-generated constructor stub
+	reverse = false;
 
 }
 
 FilterInterface::~FilterInterface()
 {
-	// TODO Auto-generated destructor stub
 }
 

@@ -58,8 +58,10 @@ int MediaItemSortFunctions::byLiking(shared_ptr<MediaItem> i, shared_ptr<MediaIt
 // --------------------------------------------------------------------------------------------------------------
 
 
-MediaItemSort::MediaItemSort(QStringList sortCriteria)
+MediaItemSort::MediaItemSort(QString order)
 {
+	QStringList sortCriteria = order.split(',');
+
 	bool foundIndexFallback = false;
 	foreach(const QString& orderString, sortCriteria)
 	{

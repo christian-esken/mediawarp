@@ -8,9 +8,9 @@
 #ifndef UNHEAREDFILTER_H_
 #define UNHEAREDFILTER_H_
 
-#include "FilterInterface.h"
+#include "BaseFilter.h"
 
-class UnhearedFilter: public FilterInterface
+class UnhearedFilter: public BaseFilter
 {
 public:
 	UnhearedFilter();

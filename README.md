@@ -7,7 +7,12 @@ keeps track of your media players content, and can exchange the media on it.
 
 ## Status
 Important note: mediawarp is in development, and Alpha status is planned
-for March 2015. Media device support shall be:
+for March 2015. You can already use it to easily create favorite playlists,
+but you need a separate application like Clementine to sync the files to your
+media player.   
+
+
+## Media player support
  - iPod (primary)
  - MTP (secondary)
  - generic USB drive (needs volunteer)
@@ -20,19 +25,19 @@ is to let it interact with as many Collections a possible, like:
  - Synology Media Station (definitely planned)
  - iTunes media server (may need volunteer)
 
-You can use two types of selectors:
- - Sorting (basically done)
- - Filters (tbd)
+You can use the following criteria:
+ - Sorting (done)
+ - Filters (done)
  - Max Limit (done)
 
 ## Sorting
  Described at section "Running"
  
 ## Filters (tbd)
-- "Last 3 albums"
-- "100 random songs"
-- "50 songs not yet heard"
-- "My 30 favorite tunes"
+- "Last 3 albums" (open)
+- "100 random songs" (done)
+- "50 songs not yet heard" (done)
+- "My 30 favorite tunes" (done
 
 You can combine as many rules as possibe. Also, all rules allow randomness, so
 for example the "30 favorite tunes" can vary if you want. For example, you could define
@@ -59,11 +64,15 @@ mediawarp
 # In general:
 mediawarp <count> <sort-rules>
 
-# Example: 50 songs sorted by LIKING ASC, if a tie use RANDOM
-mediawarp 50 +LIKING,RANDOM
+# Example: Your 50 most liked songs
+mediawarp 50 titles +LIKING,RANDOM
 
-# Example: 100 completely random songs
-mediawarp 100 RANDOM
+# Example: 1 random audiobook
+mediawarp 1 album random audiobook
+
+# Example: 100 completely random songs (titles), excluding audiobooks 
+mediawarp 100 titles random -audiobook
+
 ```
 
 Supported sort rules fore all media collections are:

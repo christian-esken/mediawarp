@@ -13,11 +13,25 @@
 class FilterInterface
 {
 public:
-	FilterInterface();
 	virtual ~FilterInterface();
 
 	virtual bool match(shared_ptr<MediaItem> mediaItem) = 0;
-	bool operator()(shared_ptr<MediaItem> mediaItem) { return match(mediaItem); };
+
+	virtual bool operator()(shared_ptr<MediaItem> mediaItem)
+	{
+		bool ret = match(mediaItem);
+		return reverse ? !ret : ret;
+	};
+
+	void setReverse(bool reverse)
+	{
+		this->reverse = reverse;
+	};
+protected:
+	FilterInterface();
+
+private:
+	bool reverse;
 };
 
 #endif /* FILTERINTERFACE_H_ */

@@ -7,7 +7,7 @@
 
 #include "UnhearedFilter.h"
 
-UnhearedFilter::UnhearedFilter()
+UnhearedFilter::UnhearedFilter() : BaseFilter()
 {
 }
 

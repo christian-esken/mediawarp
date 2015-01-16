@@ -8,11 +8,11 @@
 #ifndef ChainedAndFilter_H_
 #define ChainedAndFilter_H_
 
-#include "FilterInterface.h"
+#include "BaseFilter.h"
 
 #include <vector>       // std::vector
 
-class ChainedAndFilter: public FilterInterface
+class ChainedAndFilter: public BaseFilter
 {
 public:
 	ChainedAndFilter();

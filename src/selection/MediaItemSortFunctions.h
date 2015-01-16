@@ -11,6 +11,7 @@
 #include <algorithm>    // std::sort
 #include <vector>       // std::vector
 
+#include "QString"
 #include "QStringList"
 
 #include "../model/MediaItem.h"
@@ -26,7 +27,7 @@ public:
 	enum ORDER { NAME, LIKING, INDEX, RANDOMIZER };
 	enum DIRECTION { ASC, DESC, DEFAULT };
 
-	MediaItemSort(QStringList sortCriteria);
+	MediaItemSort(QString order);
 	virtual ~MediaItemSort();
 
 	bool operator()(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);

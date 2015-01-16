@@ -7,7 +7,7 @@
 
 #include "ChainedAndFilter.h"
 
-ChainedAndFilter::ChainedAndFilter()
+ChainedAndFilter::ChainedAndFilter() : BaseFilter()
 {
 }
 
@@ -23,17 +23,23 @@ void ChainedAndFilter::addFilter(FilterInterface* filter)
 
 }
 
+/**
+ * Returns true if the mediaItem passes all filters. If there are no filters, the mediaItem automatically passes.
+ *
+ * @param mediaItem
+ * @return true if the mediaItem passes all filters
+ */
 bool ChainedAndFilter::match(shared_ptr<MediaItem> mediaItem)
 {
 	for (shared_ptr<FilterInterface> filter : filters)
 	{
-		if (! filter->match(mediaItem))
+		if (! filter->operator()(mediaItem))
 		{
 			// AND filter
 			return false;
 		}
 	}
 
-	// All filters holde => accept
+	// All filters hold => accept
 	return true;
 }
