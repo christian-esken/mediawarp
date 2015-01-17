@@ -33,12 +33,15 @@ void SQLiteConnection::close()
  *
  * @return true, if the connection could be opened.
  */
-bool SQLiteConnection::open(QString dbname, bool create)
+bool SQLiteConnection::open(QString dbname, QString connName, bool create)
 {
 	//QSqlDatabase
-	db = QSqlDatabase::addDatabase("QSQLITE");
+	db = QSqlDatabase::addDatabase("QSQLITE", connName);
 	//db.setHostName("localhost");
-	db.setConnectOptions("QSQLITE_OPEN_READONLY");
+	if (!create)
+	{
+		db.setConnectOptions("QSQLITE_OPEN_READONLY");
+	}
 	db.setDatabaseName(dbname.toUtf8());
 
 	if (db.open())

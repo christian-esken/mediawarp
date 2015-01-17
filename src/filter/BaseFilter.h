@@ -13,12 +13,10 @@
 class BaseFilter: public FilterInterface
 {
 public:
+	BaseFilter();
 	virtual ~BaseFilter();
 
 	virtual bool match(shared_ptr<MediaItem> mediaItem);
-
-protected:
-	BaseFilter();
 };
 
 #endif /* BaseFILTER_H_ */

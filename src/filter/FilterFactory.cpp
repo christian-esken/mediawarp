@@ -30,8 +30,12 @@ FilterFactory::~FilterFactory()
  * @param filterString
  * @return
  */
-BaseFilter* FilterFactory::build(QString filterString)
+BaseFilter* FilterFactory::build(Param param)
 {
+
+
+	QString filterString = param.getFilter();
+
 	QStringList filterList = filterString.split(',', QString::SplitBehavior::SkipEmptyParts);
 	ChainedAndFilter* filterChain = new ChainedAndFilter();
 	QRegularExpression::PatternOption ci = QRegularExpression::CaseInsensitiveOption;
@@ -43,7 +47,7 @@ BaseFilter* FilterFactory::build(QString filterString)
 		if (QRegularExpression("^-?unheared$", ci).match(filterString).hasMatch())
 			filter = new UnhearedFilter();
 		else if (QRegularExpression("^-?audiobook$", ci).match(filterString).hasMatch())
-			filter = new AudiobookFilter();
+			filter = new AudiobookFilter(param.getTagExpressions(), param.getFolderExpressions());
 		else
 		{
 			Param::errorexit(QString("Unknown filter: ") + filterString, 1);

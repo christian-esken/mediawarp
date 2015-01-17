@@ -10,10 +10,12 @@
 
 #include "BaseFilter.h"
 
+#include "../util/Param.h"
+
 class FilterFactory
 {
 public:
-	static BaseFilter* build(QString filterString);
+	static BaseFilter* build(Param param);
 
 protected:
 	FilterFactory();

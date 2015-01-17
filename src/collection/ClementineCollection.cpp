@@ -21,7 +21,7 @@
 ClementineCollection::ClementineCollection(QString clementineDB) : db(clementineDB)
 {
 	conn = new SQLiteConnection();
-	if (!conn->open(clementineDB, false))
+	if (!conn->open(clementineDB, "clementine", false))
 	{
 		throw std::runtime_error(std::string("Cannot open Clementine database: db=" ) + clementineDB.toUtf8().data());
 	}

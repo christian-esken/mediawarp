@@ -14,7 +14,7 @@ public:
   SQLiteConnection();
   ~SQLiteConnection();
 
-  bool open(QString dbname, bool create);
+  bool open(QString dbname, QString connName, bool create);
   QSqlQuery* runQuery(const QString& sql);
   bool isOpen();
   void close();

@@ -11,7 +11,7 @@
 #include "Constants.h"
 
 #include <QString>
-
+#include <QStringList>
 
 class Param
 {
@@ -47,12 +47,42 @@ public:
 		return order;
 	}
 
+	const QStringList getFolderExpressions() const
+	{
+		QStringList folderExpressions;
+		folderExpressions.clear();
+		folderExpressions.append(QString("audiobooks?"));
+		folderExpressions.append("h(oe|ö)rspiele?");
+		folderExpressions.append("h(oe|ö)rb(uch|ücher)");
+		return folderExpressions;
+	}
+
+	const QStringList getTagExpressions() const
+	{
+		QStringList tagExpressions;
+		tagExpressions.clear();
+		tagExpressions.append("audiobook");
+		tagExpressions.append("h(oe|ö)rspiel");
+		tagExpressions.append("h(oe|ö)rbuch");
+
+		return tagExpressions;
+	}
+
+//
+//	QStringList folderExpressions;
+//	folderExpressions.append("h(oe|ö)rspiele?");
+//	folderExpressions.append("h(oe|ö)rb(uch|ücher)");
+//	folderExpressions.append("audiobooks?");
+
 private:
 	int limit;
 	QString order;
 	QString filter;
 //	mediawarp::Constants::MediaType mediaType;
 	mediawarp::Constants::Unit unit;
+
+//	QStringList tagExpressions;
+//	QStringList folderExpressions;
 
 };
 
