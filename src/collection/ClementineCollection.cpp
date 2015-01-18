@@ -18,7 +18,7 @@
 
 
 
-ClementineCollection::ClementineCollection(QString clementineDB) : db(clementineDB)
+ClementineCollection::ClementineCollection(int collectionId, QString clementineDB) : CollectionInterface(collectionId), db(clementineDB)
 {
 	conn = new SQLiteConnection();
 	if (!conn->open(clementineDB, "clementine", false))

@@ -19,7 +19,7 @@
 class ClementineCollection: public CollectionInterface
 {
 public:
-	ClementineCollection(QString db);
+	ClementineCollection(int collectionId, QString db);
 	virtual ~ClementineCollection();
 
 	virtual std::vector<shared_ptr<MediaItem> > load();

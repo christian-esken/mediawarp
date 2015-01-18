@@ -13,6 +13,7 @@
 
 #include "mediawarpConfig.h"
 #include "collection/ClementineCollection.h"
+#include "dao/MediawarpDAO.h"
 #include "filter/FilterFactory.h"
 #include "filter/BaseFilter.h"
 #include "filter/ChainedAndFilter.h"
@@ -21,6 +22,7 @@
 #include "selection/ElementSelectorAlbums.h"
 #include "selection/ElementSelectorSongs.h"
 #include "selection/MediaItemSortFunctions.h"
+#include "storage/SQLiteConnection.h"
 #include "util/Param.h"
 
 using std::cout;
@@ -37,57 +39,19 @@ int main(int argc, char *argv[])
 	std::vector<shared_ptr<MediaItem> > ventries;
 
 
+	MediawarpDAO* mwDAO = new MediawarpDAO();
+
 	QString homeDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/";
-
-	// QStandardPaths::AppLocalDataLocation   // AppLocalDataLocation is only available in Qt5.4 and up
-	QString appDataDir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-	appDataDir += "/mediawarp/";
-	if (printInfos)
-	{
-		std::cerr << "appDataDir=" << appDataDir.toUtf8().data() << std::endl;
-	}
-
-	QDir dir(appDataDir);
-	if (!dir.exists())
-	{
-	    dir.mkpath(".");
-	}
-
 	QString clementineDB = homeDir + ".config/Clementine/clementine.db";
-	QString mediawarpDB = appDataDir + "mediawarp.sqlite";
 
-	SQLiteConnection mwdbConn;
+	int collectionId = 1; // TODO This must later be read from the "collections" DB table
+	int playerId = 1; // TODO This must later be read from the "player" DB table
 
 	try
 	{
-		if (!mwdbConn.open(mediawarpDB, "mediawarp", true))
-		{
-			throw std::runtime_error(std::string("Cannot open mediawarp database: db=" ) + mediawarpDB.toUtf8().data());
-		}
-		/**
-		 * mwdb setup:
-		 *
-		 * Create : CREATE TABLE IF NOT EXISTS collection (collection_id INTEGER, collection_type TEXT, readable_name TEXT, uri TEXT, last_change_seen INTEGER);
-		 *
-		 * Example: 1, "clementine", "/home/chris/.config/Clementine/clementine.db", 1421453370
-		 *
-		 * collection_id     : UNIQUE ID in this table (autoincrement)
-		 * collection_type   : One of the supported collection types, e.g. "clementine"
-		 * readable_name     : User changable name, e.g. "Clementine collection on whitefall@site.local"
-		 * last_change_seen  : The latest change (add or remove title) in the collection mediawarp is aware.
-		 *
-		 *
-		 * Create : CREATE TABLE IF NOT EXISTS title (title_id INTEGER, collection_id INTEGER, id TEXT);
-		 *
-		 * Example: 1, 1, "47"
-		 *
-		 * title_id       : UNIQUE ID in this table (autoincrement)
-		 * collection_id  : Collection ID from the collection table
-		 * id             : The ID that uniquely identifies the title in the collection (collection specfic, e.g. a numeric ID or URI)
-		 *
-		 */
+		mwDAO->open();
 
-		ClementineCollection coll(clementineDB);
+		ClementineCollection coll(1, clementineDB);
 		ventries = coll.load();
 
 		Param params(argc, argv);
@@ -97,10 +61,7 @@ int main(int argc, char *argv[])
 
 		// -BEGIN- SORT ----------------------------------------------------------------------
 		MediaItemSort* sortFunction = new MediaItemSort(params.getOrder());
-
-		std::vector<shared_ptr<MediaItem> >::iterator begin1(ventries.begin());
-		std::vector<shared_ptr<MediaItem> >::iterator end1(ventries.end());
-		std::sort(begin1, end1, *sortFunction);
+		std::sort(ventries.begin(), ventries.end(), *sortFunction);
 
 		if (printInfos)
 			std::cerr << "Sorted songs         : " << ventries.size() << std::endl;
@@ -155,12 +116,12 @@ int main(int argc, char *argv[])
 			std::cout << filename.toUtf8().data() << std::endl;
 		}
 
-
+		mwDAO->markHandled(playerId, coll.getCollectionId(), selectedSongs);
 
 		// -TEARDOWN- ------------------------------------------------------------------------------------
 
-		mwdbConn.close();
 		ventries.clear();
+		delete mwDAO;
 		delete sortFunction;
 	}
 	catch (const std::exception& ex)

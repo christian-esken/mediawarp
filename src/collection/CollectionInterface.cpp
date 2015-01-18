@@ -7,7 +7,7 @@
 
 #include "CollectionInterface.h"
 
-CollectionInterface::CollectionInterface()
+CollectionInterface::CollectionInterface(int collectionId) : collectionId(collectionId)
 {
 }
 

@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+#include <exception>
+
 /**
  * Tries to opens a connection to the given database.
  * 
@@ -9,6 +11,7 @@
 SQLiteConnection::SQLiteConnection()
 {
 	_open = false;
+	_isInTransaction = false;
 }
 
 SQLiteConnection::~SQLiteConnection()
@@ -53,13 +56,10 @@ bool SQLiteConnection::open(QString dbname, QString connName, bool create)
 }
 
 /**
- * Exmaple_ 
- * QSqlQuery* query = runQuery("SELECT * FROM user;");
- while (query.next())
- {
- ...
- }
- delete query;
+ * Runs a SQL query (SELECT, UPDATE, DELETE, CREATE TABLE, ...). IN cas of errors, a td::runtime_error is thrown.
+ *
+ * @param sql
+ * @return A QSqlQuery* object that holds the result
  */
 QSqlQuery* SQLiteConnection::runQuery(const QString& sql)
 {
@@ -70,9 +70,49 @@ QSqlQuery* SQLiteConnection::runQuery(const QString& sql)
 
 	QSqlQuery* query = new QSqlQuery(sql, db);
 	bool ok = query->exec();
-//	qDebug() << "SQL status=" << ok << ",  sql=" << sql;
+	if (!ok)
+	{
+		throw std::runtime_error(std::string("Query failed: error=" ) + qPrintable(query->lastError().text())
+			+ ", sql=" + qPrintable(sql));
+
+	}
 	return query;
 }
+
+void SQLiteConnection::execPreparedQuery(QSqlQuery* query)
+{
+	bool ok = query->exec();
+	if (!ok)
+	{
+		throw std::runtime_error(std::string("Query failed: error=" ) + qPrintable(query->lastError().text())
+			+ ", sql=" + qPrintable(query->lastQuery()));
+
+	}
+}
+
+/**
+ * Prepares a QSqlQuery and starts a transaction
+ * @param sql
+ * @return
+ */
+QSqlQuery* SQLiteConnection::getPreparedQuery(QString sql)
+{
+	QSqlQuery* query = new QSqlQuery(db);
+	query->prepare(sql);
+	db.transaction();
+	_isInTransaction = true;
+	return query;
+}
+
+void SQLiteConnection::commit()
+{
+	if (_isInTransaction)
+	{
+		db.commit();
+		_isInTransaction = false;
+	}
+}
+
 
 bool SQLiteConnection::isOpen()
 {

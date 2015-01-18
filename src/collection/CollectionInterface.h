@@ -14,10 +14,18 @@
 class CollectionInterface
 {
 public:
-	CollectionInterface();
+	CollectionInterface(int collectionId);
 	virtual ~CollectionInterface();
 
 	virtual std::vector<shared_ptr<MediaItem> > load() = 0;
+
+	int getCollectionId() const
+	{
+		return collectionId;
+	}
+
+protected:
+	int collectionId;
 };
 
 #endif /* SRC_COLLECTIONINTERFACE_H_ */

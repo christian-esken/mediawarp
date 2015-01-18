@@ -6,11 +6,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src
+  )
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
+
 
 
 set (mediawarp_VERSION_MAJOR 1)
@@ -37,11 +41,12 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 
 
-
+  
 add_executable(mediawarp
 src/main.cpp
 src/collection/ClementineCollection.cpp
 src/collection/CollectionInterface.cpp
+src/dao/MediawarpDAO.cpp
 src/filter/FilterFactory.cpp
 src/filter/FilterInterface.cpp
 src/filter/BaseFilter.cpp
