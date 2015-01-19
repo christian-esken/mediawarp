@@ -51,8 +51,11 @@ int main(int argc, char *argv[])
 	{
 		mwDAO->open();
 
-		ClementineCollection coll(1, clementineDB);
-		ventries = coll.load();
+		shared_ptr<ClementineCollection> coll(new ClementineCollection(collectionId, clementineDB));
+//		ClementineCollection* coll = new ClementineCollection(1, clementineDB);
+		ventries = coll->load();
+
+		mwDAO->addCollection(coll);
 
 		Param params(argc, argv);
 
@@ -116,11 +119,12 @@ int main(int argc, char *argv[])
 			std::cout << filename.toUtf8().data() << std::endl;
 		}
 
-		mwDAO->markHandled(playerId, coll.getCollectionId(), selectedSongs);
+		mwDAO->markHandled(playerId, coll, selectedSongs);
 
 		// -TEARDOWN- ------------------------------------------------------------------------------------
 
 		ventries.clear();
+//		delete coll;
 		delete mwDAO;
 		delete sortFunction;
 	}

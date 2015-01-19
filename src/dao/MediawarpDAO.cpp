@@ -12,6 +12,7 @@
 
 MediawarpDAO::MediawarpDAO() : conn(0)
 {
+	titlesLoaded = false;
 }
 
 MediawarpDAO::~MediawarpDAO()
@@ -114,25 +115,99 @@ void MediawarpDAO::prepareTables()
 }
 
 
-void MediawarpDAO::markHandled(int playerId, int collectionId, std::vector<shared_ptr<MediaItem> > selectedSongs)
+/**
+ * Adds
+ * @param playerId
+ * @param collection
+ * @param selectedSongs
+ */
+void MediawarpDAO::markHandled(int playerId, shared_ptr<CollectionInterface> collection, std::vector<shared_ptr<MediaItem> > selectedSongs)
 {
-	QSqlQuery* query = conn->getPreparedQuery("INSERT OR IGNORE INTO title (title_id, collection_id, title_uri) VALUES (?,?,?)");
+	if (! titlesLoaded)
+	{
+		titles.clear();
+		QSqlQuery* query = conn->runQuery("SELECT title_id, collection_id INTEGER, title_uri FROM title");
+		while (query->next())
+		{
+			QSqlRecord row = query->record();
+			int title_id = row.value(0).toInt();
+			int collectionId = row.value(1).toInt();
+			QString title_uri = row.value(2).toString();
+
+			shared_ptr<CollectionInterface> coll = getCollection(collectionId);
+			if (coll != 0)
+			{
+				shared_ptr<CollectionInterface> collection(coll);
+				Title* titlePtr = new Title(title_id, collection, title_uri);
+				shared_ptr<Title> title(titlePtr);
+				titles.insert(title);
+			}
+			else
+			{
+				std::cerr << "Cannot add title. Collection unknown: collectionId=" << collectionId << std::endl;
+			}
+		}
+
+		titlesLoaded = true;
+	}
+
+
+	QSqlQuery* queryInsert = conn->getPreparedQuery("INSERT INTO title (title_id, collection_id, title_uri) VALUES (?,?,?)");
+//	QSqlQuery* queryUpdate = conn->getPreparedQuery("UPDATE title SET collection_id=?, title_uri=?) VALUES (?,?)");
+
+	int collectionId = collection->getCollectionId();
 //	QSqlQuery* query = conn->getPreparedQuery("INSERT OR IGNORE INTO title (collection_id, title_uri) VALUES (?, ?)");
 	for (auto &mi : selectedSongs)
 	{
+		Title* titlePtr = new Title(0, collection, mi->getFilename());
+		shared_ptr<Title> title(titlePtr);
+		std::set<shared_ptr<Title> >::iterator it = titles.find(title);
+		bool insert = (it == titles.end());
 
-//		query->addBindValue(collectionId);
-//		query->addBindValue(mi->getFilename());
-		query->bindValue(0, QVariant(QVariant::Int)); // null => SQLite will do autoincrement
-		query->bindValue(1, collectionId);
-		query->bindValue(2, mi->getFilename());
-//		std::cerr << "Bound " << query->boundValues().size() << std::endl;
-//		QString filename = (*mi).getFilename();
-//		QString sql = "INSERT OR IGNORE INTO title (collection_id, title_uri) VALUES (";
-//		sql += QString::number(collectionId) + ", \"" +  filename +"\")";
-		conn->execPreparedQuery(query);
+		if (insert)
+		{
+	//		query->addBindValue(collectionId);
+	//		query->addBindValue(mi->getFilename());
+			queryInsert->bindValue(0, QVariant(QVariant::Int)); // null => SQLite will do autoincrement
+			queryInsert->bindValue(1, collectionId);
+			queryInsert->bindValue(2, mi->getFilename());
+	//		std::cerr << "Bound " << query->boundValues().size() << std::endl;
+	//		QString filename = (*mi).getFilename();
+	//		QString sql = "INSERT OR IGNORE INTO title (collection_id, title_uri) VALUES (";
+	//		sql += QString::number(collectionId) + ", \"" +  filename +"\")";
+
+			// TODO This currently creates duplicates. I have to load/merge the content from the DB with the selected songs.
+			conn->execPreparedQuery(queryInsert);
+		}
 	}
 
 	conn->commit();
 }
+
+/**
+ * Returns the Collection with the given id
+ * @param collectionId
+ * @return The collection, or 0 if there is no collection with that id
+ */
+shared_ptr<CollectionInterface> MediawarpDAO::getCollection(int collectionId)
+{
+	for (shared_ptr<CollectionInterface> collection : collections)
+	{
+		if (collection->getCollectionId()  == collectionId)
+			return collection;
+	}
+
+	return shared_ptr<CollectionInterface>();
+}
+
+
+/**
+ * Add a Collection
+ */
+void MediawarpDAO::addCollection(shared_ptr<CollectionInterface> coll)
+{
+	collections.push_back(coll);
+//	collections.insert(coll);
+}
+
 

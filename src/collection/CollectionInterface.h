@@ -17,7 +17,7 @@ public:
 	CollectionInterface(int collectionId);
 	virtual ~CollectionInterface();
 
-	virtual std::vector<shared_ptr<MediaItem> > load() = 0;
+	virtual std::vector<shared_ptr<MediaItem> > load();
 
 	int getCollectionId() const
 	{
