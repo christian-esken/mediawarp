@@ -13,7 +13,7 @@ media player.
 
 
 ## Media player support
- - iPod (primary)
+ - iPod (primary, implementation started)
  - MTP (secondary)
  - generic USB drive (needs volunteer)
 
@@ -64,8 +64,11 @@ mediawarp
 # In general:
 mediawarp <count> <sort-rules>
 
-# Example: Your 50 most liked songs
+# Example: Your 50 most liked songs, randomizing equal liked songs
 mediawarp 50 titles +LIKING,RANDOM
+
+# Example: Your 50 most unliked songs
+mediawarp 50 titles -LIKING
 
 # Example: 1 random audiobook
 mediawarp 1 album random audiobook
