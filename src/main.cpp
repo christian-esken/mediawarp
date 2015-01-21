@@ -14,6 +14,7 @@
 #include "mediawarpConfig.h"
 #include "collection/ClementineCollection.h"
 #include "dao/MediawarpDAO.h"
+#include "device/IPod.h"
 #include "filter/FilterFactory.h"
 #include "filter/BaseFilter.h"
 #include "filter/ChainedAndFilter.h"
@@ -29,15 +30,19 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+void openMediaPlayers(bool printInfos);
+
 int main(int argc, char *argv[])
 {
-	bool printInfos = false;
+	bool printInfos = true;
 
 	time_t now = time(0);
 	srand(uint(now));
 
 	std::vector<shared_ptr<MediaItem> > ventries;
 
+
+	openMediaPlayers(printInfos);
 
 	MediawarpDAO* mwDAO = new MediawarpDAO();
 
@@ -135,3 +140,46 @@ int main(int argc, char *argv[])
 	}
 	return 0;
 }
+
+
+/**
+ * Experimental opening of a media player. This method must be moved to some dedicated class.
+ *
+ * @param printInfos
+ */
+void openMediaPlayers(bool printInfos)
+{
+	IPod ipodFactory("");
+	std::vector<QString> devs = ipodFactory.listDevices();
+	if (devs.size() >= 1)
+	{
+		QString firstDev = devs.front();
+		if (printInfos)
+			std::cerr << "Opening player: " << qPrintable(firstDev) << std::endl;
+
+		IPod ipod(firstDev);
+		try
+		{
+			std::vector<shared_ptr<MediaItem> > songsOnIpod = ipod.load();
+
+			if (printInfos)
+				std::cerr << "Songs on player : " << songsOnIpod.size() << std::endl;
+			for (auto &mi : songsOnIpod)
+			{
+				if (printInfos)
+				{
+					std::cerr << mi->getRating() << ", " << qPrintable(mi->getFilename()) << std::endl;
+				}
+			}
+		} catch (const std::exception& ex)
+		{
+			cerr << "Reading iPod DB failed. player=" << qPrintable(firstDev) << ex.what() << endl;
+			exit(1);
+		}
+
+		if (printInfos)
+			std::cerr << "=============================================================================" << std::endl;
+
+	}
+}
+

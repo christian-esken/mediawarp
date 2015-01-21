@@ -1,8 +1,14 @@
 
 cmake_minimum_required (VERSION 2.6)
+cmake_policy(SET CMP0011 OLD)
+
 project (mediawarp)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
+
+include(${CMAKE_MODULE_PATH}/Summary.cmake)
+include(${CMAKE_MODULE_PATH}/OptionalSource.cmake)
+#include(OptionalSource.cmake)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -25,8 +31,19 @@ find_package (Sqlite REQUIRED)
 find_package (Qt5Core REQUIRED)
 find_package (Qt5Sql REQUIRED)
 #find_package(Qt5Widgets)
-
 #  Qt5::Core
+
+find_package(PkgConfig REQUIRED)
+
+#find_package(GLIB2)
+pkg_check_modules(GLIB glib-2.0)
+
+###PKG_SEARCH_MODULE(IPOD libgpod-1.0)
+
+pkg_check_modules(LIBGPOD libgpod-1.0>=0.7.92)
+pkg_check_modules(LIBMTP libmtp>=1.0)
+# pkg_check_modules(TAGLIB REQUIRED taglib>=1.6)
+
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -39,7 +56,25 @@ configure_file (
 # so that we will find mediawarpConfig.h
 include_directories("${PROJECT_BINARY_DIR}")
 
+#include_directories(${TAGLIB_INCLUDE_DIRS})
 
+optional_component(LIBGPOD ON "Devices: iPod classic support"
+DEPENDS "libgpod" LIBGPOD_FOUND
+)
+
+#
+#optional_component(LIBMTP ON "Devices: MTP support"
+#DEPENDS "libmtp" LIBMTP_FOUND
+#)
+ 
+#optional_component(GIO ON "Devices: GIO device backend"
+#DEPENDS "libgio" GIO_FOUND
+#DEPENDS "Linux or Windows" "NOT APPLE"
+#)
+
+include_directories(${GLIB_INCLUDE_DIRS})
+include_directories(${GLIBCONFIG_INCLUDE_DIRS})
+include_directories(${LIBGPOD_INCLUDE_DIRS})
 
   
 add_executable(mediawarp
@@ -47,6 +82,9 @@ src/main.cpp
 
 src/collection/ClementineCollection.cpp
 src/collection/CollectionInterface.cpp
+
+src/device/DeviceIfc.cpp
+src/device/IPod.cpp
 
 src/dao/MediawarpDAO.cpp
 
@@ -71,11 +109,13 @@ src/util/Constants.cpp
 src/util/Param.cpp
 )
 
-
+link_directories(${GLIB_LIBRARY_DIRS})
+link_directories(${LIBGPOD_LIBRARY_DIRS})
 
 target_link_libraries(mediawarp
   Qt5::Core
   Qt5::Sql
+  ${LIBGPOD_LIBRARIES}
   )
 
     

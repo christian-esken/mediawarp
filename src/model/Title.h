@@ -45,6 +45,8 @@ protected:
 
 inline bool operator== (const Title& lhs, const Title& rhs);
 inline bool operator<(const Title& lhs, const Title& rhs);
+
+// The relevant operrator for set::find() is below, as all collections hold shared_ptr<> instances
 bool operator<(const shared_ptr<Title>& lhs, const shared_ptr<Title>& rhs);
 
 
