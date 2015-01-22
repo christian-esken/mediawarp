@@ -12,6 +12,8 @@
 #include <QStringList>
 
 #include "ChainedAndFilter.h"
+#include "AlbumFilter.h"
+#include "ArtistFilter.h"
 #include "AudiobookFilter.h"
 #include "UnhearedFilter.h"
 #include "../util/Param.h"
@@ -43,11 +45,24 @@ BaseFilter* FilterFactory::build(Param param)
 	{
 		FilterInterface* filter = 0;
 		bool reverse = filterString.startsWith('-');
+		if (reverse)
+		{
+			filterString = filterString.mid(1);
+		}
+//		bool optional = filterString.endsWith('?');
+//		if (optional)
+//		{
+//			filterString = filterString.left(filterString.length()-1);
+//		}
 
-		if (QRegularExpression("^-?unheared$", ci).match(filterString).hasMatch())
+		if (QRegularExpression("^unheared$", ci).match(filterString).hasMatch())
 			filter = new UnhearedFilter();
-		else if (QRegularExpression("^-?audiobook$", ci).match(filterString).hasMatch())
-			filter = new AudiobookFilter(param.getTagExpressions(), param.getFolderExpressions());
+		else if (QRegularExpression("^audiobook$", ci).match(filterString).hasMatch())
+			filter = new AudiobookFilter(param.getAudiobookTagExpressions(), param.getAudiobookFolderExpressions());
+		else if (QRegularExpression("^artist:", ci).match(filterString).hasMatch())
+			filter = new ArtistFilter(filterString.mid(7));
+		else if (QRegularExpression("^album:", ci).match(filterString).hasMatch())
+			filter = new AlbumFilter(filterString.mid(6));
 		else
 		{
 			Param::errorexit(QString("Unknown filter: ") + filterString, 1);

@@ -17,7 +17,7 @@ public:
 	Constants();
 	virtual ~Constants();
 
-	enum Unit { Album, Title, Duration };
+	enum Unit { Album, Title, Minutes };
 //	enum MediaType { ANY, Song, AudioBook, Podcast };
 };
 

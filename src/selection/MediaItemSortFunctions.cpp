@@ -6,6 +6,7 @@
  */
 
 #include "src/selection/MediaItemSortFunctions.h"
+#include "../util/Param.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -52,6 +53,13 @@ int MediaItemSortFunctions::byLiking(shared_ptr<MediaItem> i, shared_ptr<MediaIt
 	return compareByGenericInt(iVal, jVal);
 }
 
+int MediaItemSortFunctions::byStars(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j)
+{
+	int iVal = i->getStarrating();
+	int jVal = j->getStarrating();
+	return compareByGenericInt(iVal, jVal);
+}
+
 
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
@@ -71,6 +79,7 @@ MediaItemSort::MediaItemSort(QString order)
 		const QChar firstChar = orderString[0];
 		bool hasQualifier = firstChar == '-' || firstChar == '+';
 		QString order = hasQualifier ? orderString.mid(1) : orderString;
+		order = order.toUpper();
 
 		DIRECTION dir;
 		if (firstChar == '-')
@@ -99,6 +108,12 @@ MediaItemSort::MediaItemSort(QString order)
 				dir = DIRECTION::DESC;
 			_sortCriteria.push_back(DIRECTED_SORT(LIKING, dir));
 		}
+		else if (order == "STARS")
+		{
+			if (dir == DIRECTION::DEFAULT)
+				dir = DIRECTION::DESC;
+			_sortCriteria.push_back(DIRECTED_SORT(STARS, dir));
+		}
 		else if (order == "INDEX")
 		{
 			if (dir == DIRECTION::DEFAULT)
@@ -115,6 +130,11 @@ MediaItemSort::MediaItemSort(QString order)
 			foundIndexFallback = true;
 			break; // INDEX is unique => any further sort criteria has no effect => exit loop
 		}
+		else
+		{
+			Param::errorexit(QString("Unknown sort order: ") + order, 1);
+		}
+
 
 	}
 
@@ -181,6 +201,14 @@ bool MediaItemSort::operator()(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j)
 					std::cout << "Running operator() LIKING" << std::endl;
 				smaller = MediaItemSortFunctions::byLiking(i,j);
 				smaller2 = MediaItemSortFunctions::byLiking(j,i);
+				if (MediaItemSortFunctionsDEBUG)
+					std::cout << "Leaving operator() LIKING with " << smaller << std::endl;
+				break;
+			case STARS:
+				if (MediaItemSortFunctionsDEBUG)
+					std::cout << "Running operator() STARS" << std::endl;
+				smaller = MediaItemSortFunctions::byStars(i,j);
+				smaller2 = MediaItemSortFunctions::byStars(j,i);
 				if (MediaItemSortFunctionsDEBUG)
 					std::cout << "Leaving operator() LIKING with " << smaller << std::endl;
 				break;

@@ -6,8 +6,8 @@
 int MediaItem::indexCounter = 1;
 
 MediaItem::MediaItem() :
-	filename(QString()), playcount(0), skipcount(0), lengthMillis(0), lastplayedMillis(0), currentPlayposition(0), ctimeMillis(0),
-		mtimeMillis(0), atimeMillis(0), genre(QString()), score(0), rating(0)
+	uri(QString()), playcount(0), skipcount(0), lengthMillis(0), lastplayedMillis(0), currentPlayposition(0), ctimeMillis(0),
+		mtimeMillis(0), atimeMillis(0), genre(QString()), score(0), starrating(0)
 {
 	index = indexCounter;
 	++indexCounter;
@@ -48,13 +48,20 @@ std::ostream& MediaItem::toStream(std::ostream& os) const
 //	os.operator<<(122);
 //	std::string s;
 	os << index << ". ";
-	os << "score=" << score << " ";
-	os << "rating=" << rating << " ";
-	os << "playcount=" << playcount << " ";
-	if (filename.isNull())
-		os << "-null";
+	os << qPrintable(artist) << " - ";
+	os << qPrintable(album) << " - ";
+	os << qPrintable(title) << " | ";
+	os << "score=" << score << "% ";
+	os << qPrintable(getStarratingString());
+	if (playcount > 0)
+		os << " #" << playcount;
 	else
-		os << qPrintable(filename);
+		os << " #unheared";
+
+//	if (uri.isNull())
+//		os << "-null";
+//	else
+//		os << qPrintable(uri);
 //	os << s;//"122"; //index;
 //	os << filename.toUtf8().constData();
 //	os << filename.toUtf8();
@@ -93,26 +100,26 @@ void MediaItem::setCurrentPlayposition(long currentPlayposition)
 
 const QString& MediaItem::getFilename() const
 {
-	return filename;
+	return uri;
 }
 
-const QString MediaItem::getAlbum() const
-{
-	// TODO implement properly. This "field" possibly needs to go to the constructor
-	int slashIndex = filename.lastIndexOf('/');
-	return slashIndex == -1 ? QString() : filename.left(slashIndex);
-}
+//const QString MediaItem::getAlbum() const
+//{
+//	// TODO implement properly. This "field" possibly needs to go to the constructor
+//	int slashIndex = uri.lastIndexOf('/');
+//	return slashIndex == -1 ? QString() : uri.left(slashIndex);
+//}
+//
+//const QString MediaItem::getTitle() const
+//{
+//	// TODO implement properly. This "field" possibly needs to go to the constructor
+//	int slashIndex = uri.lastIndexOf('/');
+//	return slashIndex == -1 ? uri : uri.mid(slashIndex-1);
+//}
 
-const QString MediaItem::getTitle() const
+void MediaItem::setUri(const QString& filename)
 {
-	// TODO implement properly. This "field" possibly needs to go to the constructor
-	int slashIndex = filename.lastIndexOf('/');
-	return slashIndex == -1 ? filename : filename.mid(slashIndex-1);
-}
-
-void MediaItem::setFilename(const QString& filename)
-{
-	this->filename = filename;
+	this->uri = filename;
 //	this->filename.detach();
 }
 
@@ -166,14 +173,41 @@ void MediaItem::setPlaycount(int playcount)
 	this->playcount = playcount;
 }
 
-int MediaItem::getRating() const
+int MediaItem::getStarrating() const
 {
-	return rating;
+	return starrating;
 }
 
-void MediaItem::setRating(int rating)
+QString MediaItem::getStarratingString() const
 {
-	this->rating = rating;
+	if (starrating < 10)
+		return QString("-");
+	if (starrating < 20)
+		return QString("*");
+	if (starrating < 30)
+		return QString("**");
+	if (starrating < 40)
+		return QString("***");
+	if (starrating < 50)
+		return QString("****");
+
+	// (starrating == 50)
+	return QString("*****");
+}
+
+/**
+ * Set the star rating in the range [0 .. 50].
+ * For example 40 = 4.0 stars = "****", or 35 = 3.5 stars = "***+"
+ *
+ * @param rating
+ */
+void MediaItem::setStarrating(int rating)
+{
+	if (rating > 50)
+		rating = 50;
+	else if (rating < 0)
+		rating = 0;
+	this->starrating = rating;
 }
 
 int MediaItem::getScore() const

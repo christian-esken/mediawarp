@@ -24,7 +24,7 @@ class MediaItemSort
 {
 public:
 
-	enum ORDER { NAME, LIKING, INDEX, RANDOMIZER };
+	enum ORDER { NAME, LIKING, STARS, INDEX, RANDOMIZER };
 	enum DIRECTION { ASC, DESC, DEFAULT };
 
 	MediaItemSort(QString order);
@@ -47,6 +47,7 @@ public:
 	static int byIndex(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);
 	static int byName(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);
 	static int byLiking(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);
+	static int byStars(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);
 	static int byRandomizer(shared_ptr<MediaItem> i, shared_ptr<MediaItem> j);
 
 protected:

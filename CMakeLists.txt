@@ -90,9 +90,12 @@ src/dao/MediawarpDAO.cpp
 
 src/filter/FilterFactory.cpp
 src/filter/FilterInterface.cpp
+src/filter/AlbumFilter.cpp
+src/filter/ArtistFilter.cpp
+src/filter/AudiobookFilter.cpp
 src/filter/BaseFilter.cpp
 src/filter/ChainedAndFilter.cpp
-src/filter/AudiobookFilter.cpp
+src/filter/TagFilter.cpp
 src/filter/UnhearedFilter.cpp
 
 src/model/MediaItem.cpp
@@ -100,6 +103,7 @@ src/model/Title.cpp
 
 src/selection/ElementSelector.cpp
 src/selection/ElementSelectorAlbums.cpp
+src/selection/ElementSelectorDuration.cpp
 src/selection/ElementSelectorSongs.cpp
 src/selection/MediaItemSortFunctions.cpp
 

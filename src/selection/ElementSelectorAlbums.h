@@ -17,10 +17,13 @@
 class ElementSelectorAlbums : public ElementSelector
 {
 public:
-	ElementSelectorAlbums(int count);
+	ElementSelectorAlbums(int count, std::vector<shared_ptr<MediaItem> > unfilteredSongs);
 	virtual ~ElementSelectorAlbums();
 
 	std::vector<shared_ptr<MediaItem> > select(std::vector<shared_ptr<MediaItem> > ventries) override;
+
+private:
+	std::vector<shared_ptr<MediaItem> > unfilteredSongs;
 };
 
 #endif /* ELEMENTSELECTOR_H_ */

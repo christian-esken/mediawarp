@@ -36,6 +36,15 @@ ClementineCollection::~ClementineCollection()
 	delete conn;
 }
 
+long convertNanoToMillis(QVariant qvar)
+{
+	qlonglong evenlonger = qvar.toLongLong();
+	long verylong = evenlonger / 1000000;
+//	if (verylong > 0)
+//		std::cerr << "verylong nanos=" << evenlonger << ", millis=" << verylong << std::endl;
+	return verylong;
+}
+
 std::vector<shared_ptr<MediaItem> > ClementineCollection::load()
 {
 	std::vector<shared_ptr<MediaItem> > ventries;
@@ -43,26 +52,42 @@ std::vector<shared_ptr<MediaItem> > ClementineCollection::load()
 	QString allTunesSQL;
 	allTunesSQL.reserve(300);
 	allTunesSQL.append(
-		"select filename, lastplayed, beginning, length, genre, rating, playcount, skipcount, score, mtime, ctime");
+		"select filename, title, album, artist, lastplayed, beginning, length, genre, rating, playcount, skipcount, score, mtime, ctime");
 	allTunesSQL.append(" FROM songs");
 
 	QSqlQuery* query = conn->runQuery(allTunesSQL);
 	while (query->next())
 	{
+		int f = 0;
 		shared_ptr<MediaItem> mi1(new MediaItem());
 		QSqlRecord row = query->record();
-		mi1->setFilename(row.value(0).toString());
-		mi1->setLastplayedMillis(row.value(1).toLongLong());
-		mi1->setCurrentPlayposition(row.value(2).toLongLong());
-		mi1->setLengthMillis(row.value(3).toInt());
-		mi1->setGenre(row.value(4).toString());
-		mi1->setRating(row.value(5).toInt());
-		mi1->setPlaycount(row.value(6).toInt());
-		mi1->setSkipcount(row.value(7).toInt());
-		mi1->setScore(row.value(8).toInt());
-		long mtime = row.value(9).toLongLong();
+		mi1->setUri(row.value(f++).toString());
+		mi1->setTitle(row.value(f++).toString());
+		mi1->setAlbum(row.value(f++).toString());
+		mi1->setArtist(row.value(f++).toString());
+
+		mi1->setLastplayedMillis(convertNanoToMillis(row.value(f++)));
+		mi1->setCurrentPlayposition(convertNanoToMillis(row.value(f++)));
+		mi1->setLengthMillis(convertNanoToMillis(row.value(f++)));
+
+		mi1->setGenre(row.value(f++).toString());
+
+		float ratingFloat = row.value(f++).toFloat();
+		float ratingFloat2 = ratingFloat * 50.0;
+		int rating = (int)ratingFloat2;
+		mi1->setStarrating(rating);
+
+//		if (ratingFloat > 0)
+//			std::cerr << "Rating orig=" << ratingFloat << ", *50=" << ratingFloat2 << ", toInt=" << mi1->getStarrating()
+//				<< ", stars=" << qPrintable(mi1->getStarratingString()) << std::endl;
+
+		mi1->setPlaycount(row.value(f++).toInt());
+		mi1->setSkipcount(row.value(f++).toInt());
+		mi1->setScore(row.value(f++).toInt());
+
+		long mtime = row.value(f++).toLongLong();
 		mi1->setMtimeMillis(mtime);
-		mi1->setCtimeMillis(row.value(10).toLongLong());
+		mi1->setCtimeMillis(row.value(f++).toLongLong());
 		mi1->setAtimeMillis(mtime);
 
 		//std::cout << *mi1 << std::endl;

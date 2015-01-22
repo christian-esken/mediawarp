@@ -19,7 +19,7 @@ public:
 	long getCurrentPlayposition() const;
 	void setCurrentPlayposition(long currentPlayposition);
 	const QString& getFilename() const;
-	void setFilename(const QString& filename);
+	void setUri(const QString& filename);
 	const QString& getGenre() const;
 	void setGenre(const QString& genre);
 	long getLastplayedMillis() const;
@@ -30,15 +30,16 @@ public:
 	void setMtimeMillis(long mtimeMillis);
 	int getPlaycount() const;
 	void setPlaycount(int playcount);
-	int getRating() const;
-	void setRating(int rating);
+	int getStarrating() const;
+	QString getStarratingString() const;
+
+	void setStarrating(int rating);
 	int getScore() const;
 	void setScore(int score);
 	int getSkipcount() const;
 	void setSkipcount(int skipcount);
 
-	const QString getAlbum() const;
-	const QString getTitle() const;
+
 
 //	int operator<(const MediaItem& other);
 
@@ -48,8 +49,53 @@ public:
 	int getIndex() const;
 	int getRandomizer() const;
 
+	const QString& getArtist() const
+	{
+		return artist;
+	}
+
+	void setArtist(const QString& artist)
+	{
+		this->artist = artist;
+	}
+
+	const QString& getComposer() const
+	{
+		return composer;
+	}
+
+	void setComposer(const QString& composer)
+	{
+		this->composer = composer;
+	}
+
+	void setTitle(const QString& title)
+	{
+		this->title = title;
+	}
+
+	void setAlbum(const QString& album)
+	{
+		this->album = album;
+	}
+
+	const QString& getAlbum() const
+	{
+		return album;
+	}
+
+	const QString& getTitle() const
+	{
+		return title;
+	}
+
 private:
-  QString filename;
+  QString uri;
+  QString title;
+  QString album;
+  QString artist;
+  QString composer;
+
   int playcount;
   int skipcount;
   long lengthMillis;
@@ -61,9 +107,11 @@ private:
   long atimeMillis;
 
   QString genre;
-  int score;  // 0 - 10000
-  int rating; // 0 - 10000
 
+  int score;  // 0 - 10000
+  int starrating; // 0 - 10000
+
+  // Technical fields
   int index;
   int randomizer;
 

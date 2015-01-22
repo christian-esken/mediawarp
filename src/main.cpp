@@ -21,14 +21,12 @@
 #include "filter/UnhearedFilter.h"
 #include "model/MediaItem.h"
 #include "selection/ElementSelectorAlbums.h"
+#include "selection/ElementSelectorDuration.h"
 #include "selection/ElementSelectorSongs.h"
 #include "selection/MediaItemSortFunctions.h"
 #include "storage/SQLiteConnection.h"
 #include "util/Param.h"
 
-using std::cout;
-using std::cerr;
-using std::endl;
 
 void openMediaPlayers(bool printInfos);
 
@@ -42,7 +40,7 @@ int main(int argc, char *argv[])
 	std::vector<shared_ptr<MediaItem> > ventries;
 
 
-	openMediaPlayers(printInfos);
+//	openMediaPlayers(printInfos);
 
 	MediawarpDAO* mwDAO = new MediawarpDAO();
 
@@ -95,9 +93,11 @@ int main(int argc, char *argv[])
 
 		ElementSelector* selector;
 		if (unit == mediawarp::Constants::Unit::Album)
-			selector = new ElementSelectorAlbums(params.getLimit());
+			selector = new ElementSelectorAlbums(params.getLimit(), ventries);
 		else if (unit == mediawarp::Constants::Unit::Title)
 			selector = new ElementSelectorSongs(params.getLimit());
+		else if (unit == mediawarp::Constants::Unit::Minutes)
+			selector = new ElementSelectorDuration(params.getLimit(), mediawarp::Constants::Unit::Minutes);
 
 		std::vector<shared_ptr<MediaItem> > selectedSongs = selector->select(filteredSongs);
 
@@ -115,14 +115,23 @@ int main(int argc, char *argv[])
 
 		for (auto &mi : selectedSongs)
 		{
-			QString filename = (*mi).getFilename();
-			if (filename.startsWith("file:///"))
+			if (printInfos)
 			{
-				filename = filename.mid(7); // strip off URL prefix for files
+				std::cerr << (*mi) << std::endl;
 			}
-			// TODO This might need URL-Decode, depending on how we define MediaItem::getFilename()
-			std::cout << filename.toUtf8().data() << std::endl;
+			else
+			{
+				QString filename = (*mi).getFilename();
+				if (filename.startsWith("file:///"))
+				{
+					filename = filename.mid(7); // strip off URL prefix for files
+				}
+				// TODO This might need URL-Decode, depending on how we define MediaItem::getFilename()
+				std::cout << filename.toUtf8().data() << std::endl;
+			}
 		}
+
+
 
 		mwDAO->markHandled(playerId, coll, selectedSongs);
 
@@ -168,7 +177,7 @@ void openMediaPlayers(bool printInfos)
 			{
 				if (printInfos)
 				{
-					std::cerr << mi->getRating() << ", " << qPrintable(mi->getFilename()) << std::endl;
+					std::cerr << mi->getStarrating() << ", " << qPrintable(mi->getFilename()) << std::endl;
 				}
 			}
 		} catch (const std::exception& ex)

@@ -47,8 +47,8 @@ std::vector<shared_ptr<MediaItem> > IPod::load()
 		Itdb_Track* track = static_cast<Itdb_Track*>(tracks->data);
 		shared_ptr<MediaItem> mi(new MediaItem());
 		mi->setGenre(track->genre);
-		mi->setFilename(track->ipod_path);
-		mi->setRating(track->rating);
+		mi->setUri(track->ipod_path);
+		mi->setStarrating(track->rating);
 		mi->setPlaycount(track->playcount);
 		// TODO Continue to add all the other fields
 		titles.push_back(mi);

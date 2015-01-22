@@ -47,7 +47,7 @@ public:
 		return order;
 	}
 
-	const QStringList getFolderExpressions() const
+	const QStringList getAudiobookFolderExpressions() const
 	{
 		QStringList folderExpressions;
 		folderExpressions.clear();
@@ -57,7 +57,7 @@ public:
 		return folderExpressions;
 	}
 
-	const QStringList getTagExpressions() const
+	const QStringList getAudiobookTagExpressions() const
 	{
 		QStringList tagExpressions;
 		tagExpressions.clear();
